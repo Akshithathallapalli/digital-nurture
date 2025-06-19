@@ -1,0 +1,16 @@
+class Singleton {
+    private static Singleton obj;
+
+    // private constructor to force use of
+    // getInstance() to create Singleton object
+    private Singleton() {}
+
+    public static Singleton getInstance()
+    {
+        if (singleton == null)
+            singleton = new Singleton();
+            System.out.println("Try programiz.pro");
+            
+        return singleton;
+    }
+}
