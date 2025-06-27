@@ -1,1 +1,62 @@
+Scene-1
+Write a stored procedure ProcessMonthlyInterest that calculates and updates the balance of all savings accounts by applying an interest rate of 1% to the current balance.
+CREATE OR REPLACE PROCEDURE ProcessMonthlyInterest IS
+BEGIN
+  UPDATE SavingsAccounts
+  SET balance = balance + (balance * 0.01);
+END;
+/
 
+Scene-2
+Write a stored procedure UpdateEmployeeBonus that updates the salary of employees in a given department by adding a bonus percentage passed as a parameter.
+CREATE OR REPLACE PROCEDURE UpdateEmployeeBonus(
+  p_dep_id IN NUMBER,
+  p_bonus_percent IN NUMBER
+) IS
+BEGIN
+  UPDATE Employees
+  SET salary = salary + (salary * (p_bonus_percent / 100))
+  WHERE department_id = p_department_id;
+END;
+/
+
+
+Scene-3
+Write a stored procedure TransferFunds that transfers a specified amount from one account to another, checking that the source account has sufficient balance before making the transfer
+CREATE OR REPLACE PROCEDURE TRANSFERFUNDS(
+    P_FROM_ACCOUNT_ID IN ACCOUNTS.ACCOUNTID%TYPE,
+    P_TO_ACCOUNT_ID IN ACCOUNTS.ACCOUNTID%TYPE,
+    P_AMOUNT IN NUMBER
+) AS
+    V_FROM_BALANCE ACCOUNTS.BALANCE%TYPE;
+BEGIN
+    
+    SELECT BALANCE INTO V_FROM_BALANCE
+    FROM ACCOUNTS
+    WHERE ACCOUNTID = P_FROM_ACCOUNT_ID
+    FOR UPDATE;
+    
+    -- Check for sufficient funds
+    IF V_FROM_BALANCE < P_AMOUNT THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Insufficient funds in the source account.');
+    END IF;
+    
+    -- Perform the transfer
+    UPDATE ACCOUNTS
+    SET BALANCE = BALANCE - P_AMOUNT,
+        LASTMODIFIED = SYSDATE
+    WHERE ACCOUNTID = P_FROM_ACCOUNT_ID;
+    
+    UPDATE ACCOUNTS
+    SET BALANCE = BALANCE + P_AMOUNT,
+        LASTMODIFIED = SYSDATE
+    WHERE ACCOUNTID = P_TO_ACCOUNT_ID;
+    
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Transfer of ' || P_AMOUNT || ' from account ' || P_FROM_ACCOUNT_ID || ' to account ' || P_TO_ACCOUNT_ID || ' completed successfully.');
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('Transfer failed: ' || SQLERRM);
+END TRANSFERFUNDS;
+/
