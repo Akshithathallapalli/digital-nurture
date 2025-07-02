@@ -1,1 +1,9 @@
+Mockito
 
+import Static org.junit.Assert.*;
+public class FirstMockitoTest{
+  @Test
+  public void test(){
+    assertTrue(True);
+  }
+}
