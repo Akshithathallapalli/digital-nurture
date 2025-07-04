@@ -7,3 +7,11 @@ public class FirstMockitoTest{
     assertTrue(True);
   }
 }
+
+Verifying
+UserRepository mockRepo = mock(UserRepository.class);
+UserService svc = new UserService(mockRepo);
+
+svc.registerUser("Alice", "alice@example.com");
+verify(mockRepo).saveUser(any(User.class));
+
