@@ -1,0 +1,32 @@
+**CountryController.java**
+```java
+@RestController
+public class CountryController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryController.class);
+
+    @RequestMapping("/country")
+    public Country getCountryIndia() {
+        LOGGER.debug("getCountryIndia() start");
+        ApplicationContext context = new ClassPathXmlApplicationContext("country.xml");
+        Country country = context.getBean("country", Country.class);
+        LOGGER.debug("getCountryIndia() end");
+        return country;
+    }
+}
+
+country xml:
+<beans xmlns="http://www.springframework.org/schema/beans" ...>
+  <bean id="country" class="com.cognizant.springlearn.Country">
+    <property name="code" value="IN"/>
+    <property name="name" value="India"/>
+  </bean>
+</beans>
+
+springlearnapplication.java:
+@SpringBootApplication
+public class SpringLearnApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringLearnApplication.class, args);
+    }
+}
+
