@@ -1,1 +1,57 @@
+Spring Core – Load Country from Spring Configuration XML 
+
+
+1. **country.xml**:
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans" ...>
+     <bean id="country" class="com.cognizant.springlearn.Country">
+       <property name="code" value="IN"/>
+       <property name="name" value="India"/>
+     </bean>
+   </beans>
+
+2. **Country.java**:
+   public class Country {
+     private String code;
+     private String name;
+
+     public Country() {
+       System.out.println("Inside Country Constructor.");
+     }
+     public String getCode() { System.out.println("Getter getCode()"); return code; }
+     public void setCode(String code) { System.out.println("Setter setCode()"); this.code = code; }
+     public String   getName() { System.out.println("Getter getName()"); return name; }
+     public void setName(String name) { System.out.println("Setter setName()"); this.name = name; }
+
+     @Override
+     public String toString() {
+       return "Country{" + "code='" + code + '\'' + ", name='" + name + '\'' + '}';
+     }
+   }
+
+3. **SpringLearnApplication.java**:
+   @SpringBootApplication
+   public class SpringLearnApplication {
+     private static final Logger LOGGER = LoggerFactory.getLogger(...);
+
+     public static void main(String[] args) {
+       System.out.println("Main started");
+       displayCountry();
+       SpringApplication.run(...);
+     }
+
+     private static void displayCountry() {
+       ApplicationContext context = new ClassPathXmlApplicationContext("country.xml");
+       Country country = context.getBean("country", Country.class);
+       LOGGER.debug("Country : {}", country.toString());
+     }
+   }
+
+4. **Execution Log Sequence**:
+   - `Main started`
+   - `Inside Country Constructor.`
+   - `Setter setCode()`, `Setter setName()`
+   - `Country : Country{code='IN', name='India'}`
+
+---
 
