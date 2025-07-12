@@ -1,0 +1,42 @@
+## JWT Auth Service Via Basic Login
+
+**pom.xml** (add above dependencies)
+
+**SecurityConfig.java**
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/authenticate").permitAll()
+                .anyRequest().authenticated()
+            )
+            .httpBasic();
+        return http.build();
+    }
+}
+
+2.Auto Controller
+@RestController
+public class AuthController {
+    private static final String SECRET = "my-secret-key-which-is-very-long";
+    @GetMapping("/authenticate")
+    public Map<String, String> authenticate(@RequestHeader("Authorization") String auth) {
+        String[] parts = new String(Base64.getDecoder()
+            .decode(auth.replace("Basic ", ""))).split(":");
+        String username = parts[0];
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + 600_000);
+        String jwt = Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(now)
+            .setExpiration(expiry)
+            .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS256)
+            .compact();
+
+        return Collections.singletonMap("token", jwt);
+    }
+}
