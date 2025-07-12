@@ -1,1 +1,38 @@
+1.Go to https://start.spring.io/
+2.Set:
+Group = com.cognizant
+Artifact = spring-learn
+3.Add Dependencies:
+Spring Boot DevTools
+Spring Web
+4.Click Generate to download the project zip.
+5.Extract the zip into your Eclipse workspace root folder.
+6.Build via command line (if behind proxy):
+
+mvn clean package \
+  -Dhttp.proxyHost=proxy.cognizant.com \
+  -Dhttp.proxyPort=6050 \
+  -Dhttps.proxyHost=proxy.cognizant.com \
+  -Dhttps.proxyPort=6050 \
+  -Dhttp.proxyUser=123456
+
+7.Import into Eclipse:
+File > Import > Maven > Existing Maven Projects > Browse to extracted folder > Finish
+
+8.Add logging in SpringLearnApplication.java:
+package com.cognizant.springlearn;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringLearnApplication {
+    public static void main(String[] args) {
+        System.out.println("SpringLearnApplication main() started...");
+        SpringApplication.run(SpringLearnApplication.class, args);
+    }
+}
+
+9.Run: Right‑click SpringLearnApplication.java → Run As → Java Application.
+Check logs for the System.out.println() message to verify it's started.
 
